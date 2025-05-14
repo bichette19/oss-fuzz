@@ -16,12 +16,16 @@
 ################################################################################
 
 FROM gcr.io/oss-fuzz-base/base-builder
+
 RUN apt-get update && apt-get install -y make yasm cmake
+
+# Clone the official fuzzing harness repository (still needed for branches.txt and build logic)
 RUN git clone --depth 1 https://github.com/libjpeg-turbo/fuzz && \
     cat fuzz/branches.txt | while read branch; do \
-      git clone --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo -b $branch libjpeg-turbo.$branch; \
+      git clone --depth 1 --branch $branch https://github.com/bichette19/libjpeg-turbo.git libjpeg-turbo.$branch; \
     done
 
+# Clone seed corpora and create seed corpus archives
 RUN git clone --depth 1 https://github.com/libjpeg-turbo/seed-corpora
 RUN cd seed-corpora && zip -r ../decompress_fuzzer_seed_corpus.zip afl-testcases/jpeg* bugs/decompress*
 RUN cat fuzz/branches.txt | while read branch; do \
