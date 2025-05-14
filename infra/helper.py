@@ -1450,6 +1450,7 @@ def run_fuzzer(args):
       BASE_RUNNER_IMAGE,
       'run_fuzzer',
       args.fuzzer_name,
+      '-max_total_time=14400'
   ] + args.fuzzer_args)
 
   return docker_run(run_args, architecture=args.architecture)
@@ -1773,3 +1774,4 @@ def pull_images(language=None):
 
 if __name__ == '__main__':
   sys.exit(main())
+
